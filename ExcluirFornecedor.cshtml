@@ -1,0 +1,41 @@
+﻿@{
+    Page.Title = "Excluir Fornecedor";
+    Layout = "_Layout.cshtml";
+
+
+    var ID_FORNECEDOR = UrlData[0];
+
+    if (ID_FORNECEDOR.IsEmpty())
+    {
+        Response.Redirect("~/Menu_Fornecedor");
+    }
+
+    var db = Database.Open("ConexaoRest");
+
+    var fornecedor = db.QuerySingle("SELECT * FROM Fornecedor WHERE Id = @0", ID_FORNECEDOR);
+
+    if (IsPost && !ID_FORNECEDOR.IsEmpty())
+    {
+        var deleteQuery = "DELETE FROM Fornecedor WHERE Id = @0";
+        db.Execute(deleteQuery, ID_FORNECEDOR);
+        Response.Redirect("~/Menu_Fornecedor");
+    }
+
+}
+
+<form method="post">
+    <div align="right">
+        <input class="btn btn-primary" type="submit" value="Excluir" />
+        <a class="btn btn-warning" href="~/Menu_Fornecedor.cshtml">Cancelar</a>
+    </div>
+
+    <h2>Tem certeza que deseja excluir esse Fornecedor ?</h2>
+    <p>
+        Nome: @fornecedor.nome <br />
+        Endereço: @fornecedor.endereco <br />
+        Cidade: @fornecedor.cidade <br />
+        Telefone: @fornecedor.telefone <br />
+        Produto: @fornecedor.produto
+        
+    </p>
+</form>

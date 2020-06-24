@@ -1,0 +1,130 @@
+﻿@{
+    Page.Title = "Cadastro de Fornecedor";
+    Layout = "_Layout.cshtml";
+
+
+    Validation.RequireField("nome", "O campo Nome é obrigatório.");
+    Validation.RequireField("cnpj", "O campo CNPJ é obrigatório.");
+    Validation.RequireField("endereco", "O campo Endereço é obrigatório.");
+    Validation.RequireField("cep", "O campo CEP é obrigatório.");
+    Validation.RequireField("cidade", "O campo Cidade é obrigatório.");
+    Validation.RequireField("telefone", "O campo Telefone é obrigatório.");
+
+
+    var db = Database.Open("ConexaoRest");
+
+    var Nome = Request.Form["nome"];
+    var Cnpj = Request.Form["cnpj"];
+    var Endereco = Request.Form["endereco"];
+    var cep = Request.Form["cep"];
+    var Cidade = Request.Form["cidade"];
+    var Estado = Request.Form["estado"];
+    var Telefone = Request.Form["telefone"];
+    var produto = Request.Form["produto"];
+
+    if (IsPost && Validation.IsValid())
+    {
+        var insertQuery = "INSERT INTO Fornecedor (nome,cnpj, endereco, cep, cidade, estado, telefone, produto ) VALUES (@0, @1, @2,@3,@4,@5,@6,@7)";
+        db.Execute(insertQuery, Nome, Cnpj, Endereco, cep, Cidade, Estado, Telefone, produto);
+        Response.Redirect("~/Menu_Fornecedor");
+    }
+}
+
+
+
+<form method="post">
+    <div align="right">
+        <input class="btn btn-primary" type="submit" value="Enviar" />
+        <a class="btn btn-warning" href="~/Menu_Fornecedor.cshtml">Cancelar</a>
+    </div>
+    <br />
+    @{
+        if (IsPost && !Validation.IsValid())
+        {
+            <div class="alert alert-danger">
+                <h3><strong>Erro!</strong></h3>
+                <p>Ocorreram os seguinte(s) erro(s):</p>
+                @Html.ValidationSummary()
+            </div>
+        }
+    }
+
+    <div class="form-group col-md-12">
+
+        <div class="col-md-9">
+            <label> Fornecedor:</label><br />
+            <input class="form-control" type="text" name="nome" /><br />
+        </div>
+
+        <div class="col-md-3">
+           <label>CNPJ:</label>
+            <input class="form-control" type="text" name="cnpj" maxlength="14"/><br />
+        </div>
+
+        <div class="col-md-12">
+            <label> Endereço do Fornecedor: </label> <br />
+            <input class="form-control" type="text" name="endereco" /><br />
+        </div>
+
+        @*<div class="col-md-12">*@
+            <div class="col-md-3">
+                <label>CEP:</label>
+                <input class="form-control" type="text" name="cep" maxlength="8"/><br />
+            </div>
+            
+            <div class="col-md-6">
+               <label> Cidade:</label> <br />
+                <input class="form-control" type="text" name="cidade" /><br />
+            </div>
+
+            <div class="col-md-3">
+                Estado: <br />
+                <select class="form-control" name="Estado">
+                    <option value="AC">Acre</option>
+                    <option value="AL">Alagoas</option>
+                    <option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option>
+                    <option value="BA">Bahia</option>
+                    <option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option>
+                    <option value="ES">Espirito Santo</option>
+                    <option value="GO">Goias</option>
+                    <option value="MA">Maranhão</option>
+                    <option value="MT">Mato Grosso</option>
+                    <option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="PA">Pará</option>
+                    <option value="PB">Paraiba</option>
+                    <option value="PR">Paraná</option>
+                    <option value="PE">Pernambuco</option>
+                    <option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="RN">Rio Grande do Norte</option>
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondonia</option>
+                    <option value="RR">Roraima</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="SE">Sergipe</option>
+                    <option value="TO">Tocantins</option>
+
+                </select>
+            </div>
+        @*</div>*@
+
+        <div class="col-md-6">
+            Telefone do Fornecedor: <br />
+            <input class="form-control" type="text" name="telefone" maxlength="10" /><br />
+        </div>
+        <div class="col-md-6">
+            <label> Produto: </label>
+            <select class="form-control" name="produto">
+                <option value="massa">Massa</option>
+                <option value="HortiFruti">HortiFruti</option>
+                <option value="caixa">Caixa de Entrega</option>
+            </select>
+        </div>
+    </div>
+
+
+</form>

@@ -1,0 +1,55 @@
+﻿@{
+    Page.Title = "Reservas";
+    Layout = "_Layout.cshtml";
+    var db = Database.Open("ConexaoRest");
+
+    var pesq = Request.Form["busca"];
+    var selecao = "SELECT * FROM Reserva WHERE Cliente like '%" + pesq + "%' ORDER BY Cliente";
+
+    var data = db.Query(selecao);
+    var grid = new WebGrid(source: data, rowsPerPage: 5); 
+}
+
+<div id="main" class="container-fluid">
+    <div id="top" class="row">
+        <div class="col-md-3">
+            <h2>Lista de Reservas</h2>
+        </div>
+
+        <form method="post">
+            <div class="col-md-6">
+                <div class="input-group h2">
+                    <input class="form-control" name="busca" type="text"
+                           placeholder="Pesquisa de reserva por Nome do Cliente" />
+                    <span class="input-group-btn">
+                        <input type="submit" class="btn btn-primary"
+                               value="Pesquisar" />
+                    </span>
+                </div>
+            </div>
+        </form>
+
+        <div class="col-md-3">
+            <a href="~/Cad_Reserva.cshtml" class="btn btn-primary pull-right h2">
+                Inserir Reserva
+            </a>
+        </div>
+    </div>
+</div>
+<hr />
+
+<div class="table-responsive col-md-12">
+    @grid.GetHtml(
+    tableStyle: "table table-striped",
+    columns: grid.Columns(
+    grid.Column("id", "Código", style: "col-md-1"),
+    grid.Column("cliente", "Cliente", style: "col-md-3"),
+    grid.Column("telefone", "Telefone", style: "col-md-1"),
+    grid.Column("data", "Data", style: "col-md-2"),
+    grid.Column("Qtde_pessoas", "Pessoas", style: "col-md-1"),
+    grid.Column("evento", "Evento", style: "col-md-2"),
+    grid.Column(format:@<a href="@Href("~/AlterarReserva",item.Id)" class="btn btn-warning">Editar</a>),
+     grid.Column(format:@<a href="@Href("~/ExcluirReserva",item.Id)" class="btn btn-danger">Excluir</a>)
+    )
+    )
+</div>

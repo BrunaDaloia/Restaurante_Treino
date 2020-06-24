@@ -1,0 +1,118 @@
+﻿@{
+    Page.Title = "Cadastro de Cliente";
+    Layout = "_Layout.cshtml";
+
+
+    Validation.RequireField("nome", "O campo Nome é obrigatório.");
+    
+    Validation.RequireField("endereco", "O campo Endereço é obrigatório.");
+    Validation.RequireField("cidade", "O campo Cidade é obrigatório.");
+    Validation.RequireField("telefone", "O campo Telefone é obrigatório.");
+    Validation.RequireField("celular", "O campo Celular é obrigatório.");
+
+
+    var db = Database.Open("ConexaoRest");
+
+    var Nome = Request.Form["nome"];
+    var Endereco = Request.Form["endereco"];
+    var Cidade = Request.Form["cidade"];
+    var Estado = Request.Form["estado"];
+    var Telefone = Request.Form["telefone"];
+    var Celular = Request.Form["celular"];
+    var data_Nasc = Request.Form["data_nasc"]; 
+
+    if (IsPost && Validation.IsValid())
+    {
+        var insertQuery = "INSERT INTO Cliente (nome, endereco, cidade, estado, telefone, celular,data_nasc ) VALUES (@0, @1, @2,@3,@4,@5,@6)";
+        db.Execute(insertQuery, Nome, Endereco, Cidade,Estado, Telefone, Celular,data_Nasc); //parametros, @1, @2 ...
+        Response.Redirect("~/Menu_Cliente");
+    }
+}
+
+    
+        <form method="post">
+            <div align="right">
+                <input class="btn btn-primary" type="submit" value="Enviar" />
+                <a class="btn btn-warning" href="~/Menu_Cliente.cshtml">Cancelar</a>
+            </div>
+            <br />
+            @{
+                if (IsPost && !Validation.IsValid())
+                {
+                    <div class="alert alert-danger">
+                        <h3><strong>Erro!</strong></h3>
+                        <p>Ocorreram os seguinte(s) erro(s):</p>
+                        @Html.ValidationSummary()
+                    </div>
+                }
+            }
+
+            <div class="row form-group col-md-12">
+
+                <div class="col-md-9">
+                    <label> Cliente:</label><br />
+                    <input class="form-control" type="text" name="nome" placeholder="nome" /><br />
+                </div>
+
+                <div class="col-md-3">
+                    <label> Data de Nascimento: </label>
+                    <input class="form-control" type="date" name="data_nasc" /><br />
+                </div>
+
+                <div class="col-md-12">
+                    <label> Endereço do Cliente: </label> <br />
+                    <input class="form-control" type="text" name="endereco" placeholder="Endereço" /><br />
+                </div>
+
+                <div class="col-md-9">
+                    <label>Cidade: </label><br />
+                    <input class="form-control" type="text" name="cidade" placeholder="cidade" /><br />
+                </div>
+
+                <div class="col-md-3">
+                    <label>Estado: </label><br />
+                    <select class="form-control" name="Estado">
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espirito Santo</option>
+                        <option value="GO">Goias</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraiba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondonia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label> Telefone do Cliente: </label> <br />
+                    <input class="form-control" type="text" name="telefone" maxlength="10" placeholder="(__) ____-____" /><br />
+                </div>
+                <div class="col-md-6">
+                    <label> Celular: </label> <br />
+                    <input class="form-control" type="text" name="celular" maxlength="11" placeholder="(__) _____-____" /><br />
+                </div>
+            </div>
+            
+ </form>
+
+    

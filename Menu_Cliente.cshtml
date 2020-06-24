@@ -1,0 +1,56 @@
+﻿@{
+    Page.Title = "Cadastro de Clientes";
+    Layout = "_Layout.cshtml";
+
+    var db = Database.Open("ConexaoRest");
+
+    var pesq = Request.Form["busca"];
+    var selecao = "SELECT * FROM Cliente WHERE NOME like '%" + pesq + "%' ORDER BY NOME";
+
+    var data = db.Query(selecao);
+    var grid = new WebGrid(source: data, rowsPerPage: 5);
+
+}
+<div id="main" class="container-fluid">
+    <div id="top" class="row">
+        <div class="col-md-3">
+            <h2>Lista de Clientes</h2>
+        </div>
+
+        <form method="post">
+            <div class="col-md-6">
+                <div class="input-group h2">
+                    <input class="form-control" name="busca" type="text"
+                           placeholder="Pesquisa de cliente por Nome" />
+                    <span class="input-group-btn">
+                        <input type="submit" class="btn btn-primary"
+                               value="Pesquisar" />
+                    </span>
+                </div>
+            </div>
+        </form>
+
+        <div class="col-md-3">
+            <a href="~/Cad_Cliente.cshtml" class="btn btn-primary pull-right h2"> Inserir Cliente
+            </a>
+        </div>
+    </div>
+</div>
+<hr />
+
+
+<div class="table-responsive col-md-12">
+    @grid.GetHtml(
+    tableStyle: "table table-striped",
+    columns: grid.Columns(
+    grid.Column("id", "Código", style: "col-md-1"),
+    grid.Column("nome", "Cliente", style: "col-md-3"),
+    grid.Column("data_nasc", "Data de Nascimento", style: "col-md-1"),
+    grid.Column("cidade", "Cidade", style: "col-md-2"),
+    grid.Column("telefone", "Telefone", style: "col-md-1"),
+    grid.Column("celular", "Celular", style: "col-md-2"),
+    grid.Column(format:@<a href="@Href("~/AlterarCliente",item.Id)" class="btn btn-warning">Editar</a>),
+     grid.Column(format:@<a href="@Href("~/ExcluirCliente",item.Id)" class="btn btn-danger">Excluir</a>)
+    )
+    )
+</div>

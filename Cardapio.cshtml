@@ -1,0 +1,42 @@
+﻿@{
+
+    Page.Title = "Cardápio";
+    Layout = "_Layout.cshtml";
+
+    var arquivoDados = Server.MapPath("~/App_Data/Car.csv");
+    
+    Array dadosLidos = File.ReadAllLines(arquivoDados);
+
+
+}
+
+
+<div class="col-md-12">
+<div class="col-md-5 col-md-offset-0">
+    <h1>Cardápio</h1>
+
+    <table class="table-responsive col-md-12">
+        <tr>
+
+            <th>Pratos</th>
+
+        </tr>
+        @foreach (string linhadedados in dadosLidos)
+        {
+            foreach (string colunaDados in linhadedados.Split(';'))
+            {
+                <tr>
+                    <td>@colunaDados</td>
+                </tr>
+            }
+        }
+
+
+    </table>
+</div>
+    <div class="col-md-7">
+        <br />
+        <br /> <br />
+        <img class="imgW100" src="~/imagens/cardapio.jpg" />
+    </div>
+</div>

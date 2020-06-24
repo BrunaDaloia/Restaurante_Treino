@@ -1,0 +1,140 @@
+﻿@{
+    Page.Title = "Alterar Cliente";
+    Layout = "_Layout.cshtml";
+
+    Validation.RequireField("nome", "O campo Nome é obrigatório.");
+
+    Validation.RequireField("endereco", "O campo Endereço é obrigatório.");
+    Validation.RequireField("cidade", "O campo Cidade é obrigatório.");
+    Validation.RequireField("telefone", "O campo Telefone é obrigatório.");
+    Validation.RequireField("celular", "O campo Celular é obrigatório.");
+
+
+    var nome = "";
+    var endereco = "";
+    var cidade = "";
+    var estado = "";
+    var telefone = "";
+    var celular = "";
+    DateTime data_nasc;
+
+    var ID_CLIENTE = UrlData[0];
+
+    if (ID_CLIENTE.IsEmpty())
+    {
+        Response.Redirect("~/Menu_Cliente");
+    }
+
+    var db = Database.Open("ConexaoRest");
+
+    if (IsPost && Validation.IsValid())
+    {
+        var updateQuery = "UPDATE Cliente SET nome = @0, endereco = @1, cidade = @2, estado = @3, telefone = @4, celular = @5, data_nasc = @6, WHERE ID = @7";
+
+        nome = Request.Form["nome"];
+        endereco = Request.Form["endereco"];
+        cidade = Request.Form["cidade"];
+        estado = Request.Form["estado"];
+        telefone = Request.Form["telefone"];
+        celular = Request.Form["celular"];
+        data_nasc = Request.Form["data_nasc"].AsDateTime();
+
+        db.Execute(updateQuery, nome, endereco, cidade, estado, telefone, celular, data_nasc, ID_CLIENTE);
+        Response.Redirect("~/Menu_Cliente");
+    }
+    else
+    {
+        var selectQuery = "SELECT * FROM Cliente WHERE Id = @0";
+        var linha = db.QuerySingle(selectQuery, ID_CLIENTE);
+        nome = linha.nome;
+        endereco = linha.endereco;
+        cidade = linha.cidade;
+        estado = linha.estado;
+        telefone = linha.telefone;
+        celular = linha.celular;
+        data_nasc = Convert.ToDateTime(linha.data_nasc);
+    }
+}
+
+<form method="post">
+
+    <div align="right">
+        <input class="btn btn-primary" type="submit" value="Enviar" />
+        <a class="btn btn-warning" href="~/Menu_Cliente.cshtml">Cancelar</a>
+    </div>
+    <br />
+    @{
+        if (IsPost && !Validation.IsValid())
+        {
+            <div class="alert alert-danger">
+                <h3><strong>Erro!</strong></h3>
+                <p>Ocorreram os seguinte(s) erro(s):</p>
+                @Html.ValidationSummary()
+            </div>
+        }
+    }
+
+    <div class="row form-group col-md-12">
+
+        <div class="col-md-10">
+            <label> Cliente:</label><br />
+            <input class="form-control" type="text" name="nome" value="@nome" /><br />
+        </div>
+
+
+        <div class="col-md-12">
+            <label> Endereço do Cliente: </label> <br />
+            <input class="form-control" type="text" name="endereco" value="@endereco" /><br />
+        </div>
+
+        <div class="col-md-9">
+            <label>Cidade: </label><br />
+            <input class="form-control" type="text" name="cidade" value="@cidade" /><br />
+        </div>
+
+        <div class="col-md-3">
+            <label>Estado: </label><br />
+            <select class="form-control" name="Estado">
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espirito Santo</option>
+                <option value="GO">Goias</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraiba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondonia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label> Telefone do Cliente: </label> <br />
+            <input class="form-control" type="text" name="telefone" maxlength="10" value="@telefone" /><br />
+        </div>
+        <div class="col-md-6">
+            <label> Celular: </label> <br />
+            <input class="form-control" type="text" name="celular" maxlength="11" value="@celular" /><br />
+        </div>
+    </div>
+
+   
+</form>

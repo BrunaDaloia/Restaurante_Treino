@@ -1,0 +1,161 @@
+﻿@{
+    Page.Title = "Alterar Cliente";
+    Layout = "_Layout.cshtml";
+
+    Validation.RequireField("nome", "O campo Nome é obrigatório.");
+    Validation.RequireField("cnpj", "O campo CNPJ é obrigatório.");
+    Validation.RequireField("endereco", "O campo Endereço é obrigatório.");
+    Validation.RequireField("cep", "O campo CEP é obrigatório.");
+    Validation.RequireField("cidade", "O campo Cidade é obrigatório.");
+    Validation.RequireField("telefone", "O campo Telefone é obrigatório.");
+
+    var nome = "";
+    var cnpj = "";
+    var endereco = "";
+    var cep = "";
+    var cidade = "";
+    var estado = "";
+    var telefone = "";
+    var produto = "";
+
+    var ID_FORNECEDOR = UrlData[0];
+
+    if (ID_FORNECEDOR.IsEmpty())
+    {
+        Response.Redirect("~/Menu_Fornecedor");
+    }
+
+    var db = Database.Open("ConexaoRest");
+
+    if (IsPost && Validation.IsValid())
+    {
+        var updateQuery = "UPDATE Fornecedor SET nome = @0, cnpj= @1, endereco = @2, cep = @3, cidade = @4, estado = @5, telefone = @6, produto = @7 WHERE ID = @8";
+
+        nome = Request.Form["nome"];
+        cnpj = Request.Form["cnpj"];
+        endereco = Request.Form["endereco"];
+        cep = Request.Form["cep"];
+        cidade = Request.Form["cidade"];
+        estado = Request.Form["estado"];
+        telefone = Request.Form["telefone"];
+        produto = Request.Form["produto"];
+
+        db.Execute(updateQuery, nome, cnpj, endereco, cep, cidade, estado, telefone, produto, ID_FORNECEDOR);
+        Response.Redirect("~/Menu_Fornecedor");
+    }
+    else
+    {
+        var selectQuery = "SELECT * FROM Fornecedor WHERE Id = @0";
+        var linha = db.QuerySingle(selectQuery, ID_FORNECEDOR);
+        nome = linha.nome;
+        cnpj = linha.cnpj;
+        endereco = linha.endereco;
+        cep = linha.cep;
+        cidade = linha.cidade;
+        estado = linha.estado;
+        telefone = linha.telefone;
+        produto = linha.produto;
+    }
+}
+
+
+
+<form method="post">
+
+    <div align="right">
+        <input class="btn btn-primary" type="submit" value="Enviar" />
+        <a class="btn btn-warning" href="~/Menu_Fornecedor.cshtml">Cancelar</a>
+    </div>
+    <br />
+    @{
+        if (IsPost && !Validation.IsValid())
+        {
+            <div class="alert alert-danger">
+                <h3><strong>Erro!</strong></h3>
+                <p>Ocorreram os seguinte(s) erro(s):</p>
+                @Html.ValidationSummary()
+            </div>
+        }
+    }
+
+    <div class="form-group col-md-12">
+
+        <div class="col-md-9">
+            <label> Fornecedor:</label><br />
+            <input class="form-control" type="text" name="nome" placeholder="Fornecedor" value="@nome" /><br />
+        </div>
+
+        <div class="col-md-3">
+            <label>CNPJ:</label>
+            <input class="form-control" type="text" name="cnpj" maxlength="14" placeholder="CNPJ" value="@cnpj" /><br />
+        </div>
+
+        <div class="col-md-12">
+            <label> Endereço do Fornecedor: </label> <br />
+            <input class="form-control" type="text" name="endereco" placeholder="Enereço" value="@endereco" /><br />
+        </div>
+
+        
+        <div class="col-md-3">
+            <label>CEP:</label>
+            <input class="form-control" type="text" name="cep" maxlength="8" placeholder="CEP" value="@cep"/><br />
+        </div>
+
+        <div class="col-md-6">
+            <label> Cidade:</label> <br />
+            <input class="form-control" type="text" name="cidade" placeholder="Cidade" value="@cidade" /><br />
+        </div>
+
+        <div class="col-md-3">
+            Estado: <br />
+            <select class="form-control" name="Estado">
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espirito Santo</option>
+                <option value="GO">Goias</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraiba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondonia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+
+            </select>
+        </div>
+        
+
+        <div class="col-md-6">
+            Telefone do Fornecedor: <br />
+            <input class="form-control" type="text" name="telefone" maxlength="10" placeholder="Telefone" value="@telefone" /><br />
+        </div>
+        <div class="col-md-6">
+            <label> Produto: </label>
+            <select class="form-control" name="produto">
+                <option value="massa">Massa</option>
+                <option value="HortiFruti">HortiFruti</option>
+                <option value="caixa">Caixa de Entrega</option>
+            </select>
+        </div>
+    </div>
+
+
+</form>
+
+

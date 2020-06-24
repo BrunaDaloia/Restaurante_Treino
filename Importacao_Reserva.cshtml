@@ -1,0 +1,18 @@
+﻿@{
+    Page.Title = "Importação de arquivo Txt";
+    Layout = "_Layout.cshtml";
+
+    var arquivoDados = Server.MapPath("~/App_Data/Reserva.csv");
+    Array dadosLidos = File.ReadAllLines(arquivoDados);
+}
+
+<h1>Dados lidos de um arquivo txt</h1>
+
+@foreach (string linhadedados in dadosLidos)
+{
+    foreach (string colunaDados in linhadedados.Split(';'))
+    {
+        @colunaDados <text>&nbsp;</text>
+        <br />
+    }
+}
